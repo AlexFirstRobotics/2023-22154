@@ -22,13 +22,40 @@ public class AutonBlueSpikeDetect extends LinearOpMode {
         ArmSubsystem armSubsystem = new ArmSubsystem(hardwareMap);
         SensorSubsystem sensorSubsystem = new SensorSubsystem(hardwareMap);
 
+        Trajectory trajInit = drive.trajectoryBuilder(new Pose2d(-63, 35), 1.5707963267948966)
+                .splineToConstantHeading(new Vector2d(-45, 35), 0)
+                .build();
+
+        Trajectory trajFrontStart = drive.trajectoryBuilder(trajInit.end())
+                .strafeRight(16)
+                .forward(12)
+                .build();
+
+        Trajectory trajFrontEnd = drive.trajectoryBuilder(trajFrontStart.end())
+                .back(12)
+                .build();
+
+        Trajectory trajRearStart = drive.trajectoryBuilder(trajInit.end())
+                .forward(20)
+                .build();
+
+        Trajectory trajRearEnd = drive.trajectoryBuilder(trajRearStart.end())
+                .back(20)
+                .build();
+
+        Trajectory trajRightStart = drive.trajectoryBuilder(trajInit.end())
+                .forward(20)
+                .build();
+
+        Trajectory trajRightEnd = drive.trajectoryBuilder(trajRightStart.end())
+                .back(20)
+                .build();
+
+
         waitForStart();
 
         if (isStopRequested()) return;
 
-        Trajectory trajInit = drive.trajectoryBuilder(new Pose2d(-63, 35), 1.5707963267948966)
-                .strafeRight(40)
-                .build();
         armSubsystem.CloseGrabServo();
         armSubsystem.wait(1000);
         drive.followTrajectory(trajInit);
@@ -38,11 +65,8 @@ public class AutonBlueSpikeDetect extends LinearOpMode {
                 // Front
 
                 // Move to score
-                Trajectory traj = drive.trajectoryBuilder(new Pose2d(0, 0))
-                        .strafeRight(16)
-                        .forward(12)
-                        .build();
-                drive.followTrajectory(traj);
+
+                drive.followTrajectory(trajFrontStart);
                 armSubsystem.wait(1000);
 
                 // Release Pixel
@@ -50,19 +74,18 @@ public class AutonBlueSpikeDetect extends LinearOpMode {
                 armSubsystem.wait(1000);
 
                 // Move Back
-                Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(0, 0))
-                        .back(12)
-                        .build();
-                drive.followTrajectory(traj2);
+
+                drive.followTrajectory(trajFrontEnd);
+                return;
             } else {
                 // Right
 
                 // Move to score
                 drive.turn(-90);
-                Trajectory traj = drive.trajectoryBuilder(new Pose2d(0,0))
+                Trajectory traj = drive.trajectoryBuilder(trajInit.end())
                         .forward(20)
                         .build();
-                drive.followTrajectory(traj);
+                drive.followTrajectory(trajRightStart);
                 armSubsystem.wait(1000);
 
                 // Release Pixel
@@ -70,10 +93,9 @@ public class AutonBlueSpikeDetect extends LinearOpMode {
                 armSubsystem.wait(1000);
 
                 // Move Back
-                Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(0, 0))
-                        .back(20)
-                        .build();
-                drive.followTrajectory(traj2);
+
+                drive.followTrajectory(trajRightEnd);
+                return;
             }
         } else if (sensorSubsystem.getFrontBlue() < sensorSubsystem.getRearBlue()) {
             // Rear
@@ -82,10 +104,8 @@ public class AutonBlueSpikeDetect extends LinearOpMode {
 
                 // Move to score
                 drive.turn(180);
-                Trajectory traj = drive.trajectoryBuilder(new Pose2d(0,0))
-                        .forward(20)
-                        .build();
-                drive.followTrajectory(traj);
+
+                drive.followTrajectory(trajRearStart);
                 armSubsystem.wait(1000);
 
                 // Release Pixel
@@ -93,29 +113,22 @@ public class AutonBlueSpikeDetect extends LinearOpMode {
                 armSubsystem.wait(1000);
 
                 // Move Back
-                Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(0, 0))
-                        .back(20)
-                        .build();
-                drive.followTrajectory(traj2);
+
+                drive.followTrajectory(trajRearEnd);
+                return;
             } else {
                 // Right
 
                 // Move to score
                 drive.turn(-90);
-                Trajectory traj = drive.trajectoryBuilder(new Pose2d(0,0))
-                        .forward(20)
-                        .build();
-                drive.followTrajectory(traj);
+
+                drive.followTrajectory(trajRightStart);
                 armSubsystem.wait(1000);
 
                 // Release Pixel
                 armSubsystem.OpenGrabServo();
 
-                // Move Back
-                Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(0, 0))
-                        .back(20)
-                        .build();
-                drive.followTrajectory(traj2);
+                drive.followTrajectory(trajRightEnd);
             }
         }
 

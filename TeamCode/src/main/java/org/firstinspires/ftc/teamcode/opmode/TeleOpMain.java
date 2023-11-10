@@ -12,24 +12,43 @@ public class TeleOpMain extends OpMode {
 
     SampleMecanumDrive mecanumDrive;
     ArmSubsystem armSubsystem;
+    Thread driveThread;
+    int startThread = 0;
 
     @Override
     public void init() {
         mecanumDrive = new SampleMecanumDrive(hardwareMap);
         armSubsystem = new ArmSubsystem(hardwareMap);
         armSubsystem.ApplyPower(1);
+        driveThread = new DriveThread();
+    }
+
+    private class DriveThread extends java.lang.Thread {
+        public DriveThread(){
+            this.setName("DriveThread");
+        }
+
+        @Override
+        public void run(){
+            while (!isInterrupted()) {
+                mecanumDrive.setWeightedDrivePower(
+                        new Pose2d(
+                                -gamepad1.left_stick_y,
+                                -gamepad1.left_stick_x*.75,
+                                -gamepad1.right_stick_x
+                        )
+                );
+            }
+        }
     }
 
     @Override
     public void loop() {
+        if (startThread == 0) {
+            driveThread.start();
+            startThread = 1;
+        }
 
-        mecanumDrive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad1.left_stick_y,
-                        -gamepad1.left_stick_x*.75,
-                        -gamepad1.right_stick_x
-                )
-        );
 
         if (gamepad2.a) {
             armSubsystem.PickupPosition();

@@ -78,7 +78,7 @@ public class ArmSubsystem {
     }
 
     public void ArmUpForClimb() {
-        extendMotor.setTargetPosition(ArmConstants.ARM_POSITIONS.EXTEND.PICKUP_POSITION);
+        extendMotor.setTargetPosition(ArmConstants.ARM_POSITIONS.EXTEND.HOME_POSITION);
         pivotMotor.setTargetPosition(ArmConstants.ARM_POSITIONS.PIVOT.CLIMB_UP_POSITION);
     }
 
@@ -89,6 +89,7 @@ public class ArmSubsystem {
     }
 
     public void Climb() {
+//        pivotMotor.setPower(0.8);
         pivotMotor.setTargetPosition(ArmConstants.ARM_POSITIONS.PIVOT.CLIMB_DOWN_POSITION);
     }
 
@@ -103,6 +104,9 @@ public class ArmSubsystem {
     public void LaunchPlane() {
         launchServo.setPosition(0.5);
     }
+
+    public void ExtendArm(double power) { extendMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); extendMotor.setPower(power);}
+    public void PivotArm(double power) { pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); pivotMotor.setPower(power);}
 
     public int GetPivotPosition() {
         return pivotMotor.getCurrentPosition();

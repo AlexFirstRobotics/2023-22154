@@ -22,6 +22,10 @@ public class LogAllPositions extends OpMode {
 
     @Override
     public void loop() {
+
+        armSubsystem.ExtendArm(-gamepad2.left_stick_y);
+        armSubsystem.PivotArm(-gamepad2.right_stick_y);
+
         telemetry.addData("PivotPosition", armSubsystem.GetPivotPosition());
         telemetry.addData("ExtendPosition", armSubsystem.GetExtendPosition());
         telemetry.addData("GrabPosition", armSubsystem.GetGrabPosition());
