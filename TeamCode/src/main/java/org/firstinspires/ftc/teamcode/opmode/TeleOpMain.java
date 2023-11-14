@@ -58,9 +58,9 @@ public class TeleOpMain extends OpMode {
             armSubsystem.ScorePosition();
         }
 
-        if (gamepad2.x) {
-            armSubsystem.ScoreExtraPosition();
-        }
+//        if (gamepad2.x) {
+//            armSubsystem.ScoreExtraPosition();
+//        }
 
         if (gamepad2.right_bumper) {
             armSubsystem.OpenGrabServo();
